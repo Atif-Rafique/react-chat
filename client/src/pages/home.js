@@ -1,13 +1,17 @@
 import React, { useState } from 'react';
 
 import { useNavigate } from 'react-router-dom';
+import { useSocketProvider } from '../context/chat-context';
 
 
 // ===================================================================
 
-const Home = ({socket}) => {
+const Home = () => {
     const navigate = useNavigate();
     const [userName, setUserName] = useState('');
+
+
+    const { socket } = useSocketProvider();
 
     // const handleSubmit = (e) => {
     //     e.preventDefault();
@@ -17,10 +21,21 @@ const Home = ({socket}) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        localStorage.setItem('userName', userName);
+        localStorage.setItem(socket.id, userName);
+
         //sends the username and socket ID to the Node.js server
         socket.emit('newUser', { userName, socketID: socket.id });
-        navigate('/chat');
+        // navigate('/chat');
+
+        // Listen for the chat history response from the server
+        socket.on('chatHistory', (chatHistory) => {
+            // Do something with the chat history (e.g., save it to local state)
+            console.log('Chat history:', chatHistory);
+        // Navigate to the chat page
+            navigate('/chat');
+        });
+
+
     };
 
 

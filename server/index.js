@@ -23,7 +23,7 @@ http.listen(PORT, () => {
 // Code here to connect the socket.io
 const socketIO = require('socket.io')(http, {
     cors: {
-        origin: ["http://localhost:3000", "http://localhost:3002"]
+    origin: ["http://localhost:3000", "http://localhost:3002", "http://localhost:3001"]
     }
 });
 
@@ -69,7 +69,8 @@ socketIO.on('connection', (socket) => {
     // Emit the response when got something like typing from a user 
     socket.on('typing', (data) => socket.broadcast.emit('typingResponse', data));
 
-    socket.on('stoppedTyping', (data) => socket.broadcast.emit('typingResponse', data));
+  socket.on('stoppedTyping', (data) => socket.broadcast.emit('typingResponse', data));
+
     
 
     socket.on('disconnect', () => {

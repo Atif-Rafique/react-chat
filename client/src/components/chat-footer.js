@@ -1,13 +1,21 @@
 import React, { useState, useRef } from 'react';
+import { useSocketProvider } from '../context/chat-context';
 
-const ChatFooter = ({ socket }) => {
+const ChatFooter = () => {
+
+    const { socket } = useSocketProvider();
+
+
+    console.log('socket in chat foottrr', socket);
+
+
     const [message, setMessage] = useState('');
     const [isTyping, setIsTyping] = useState(false);
     const formRef = useRef(null);
 
     const handleTyping = () => {
         if (!isTyping) {
-            socket.emit('typing', `${localStorage.getItem('userName')} is typing`);
+            socket.emit('typing', `${localStorage.getItem(socket.id)} is typing`);
             setIsTyping(true);
         }
 
@@ -20,10 +28,10 @@ const ChatFooter = ({ socket }) => {
 
     const handleSendMessage = (e) => {
         e.preventDefault();
-        if (message.trim() && localStorage.getItem('userName')) {
+        if (message.trim() && localStorage.getItem(socket.id)) {
             socket.emit('message', {
                 text: message,
-                name: localStorage.getItem('userName'),
+                name: localStorage.getItem(socket.id),
                 id: `${socket.id}${Math.random()}`,
                 socketID: socket.id,
             });

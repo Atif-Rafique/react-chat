@@ -1,14 +1,22 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const ChatBody = ({ messages, lastMessageRef, typingStatus }) => {
     const navigate = useNavigate();
+    const containerRef = useRef();
 
     const handleLeaveChat = () => {
         localStorage.removeItem('userName');
         navigate('/');
         window.location.reload();
     };
+
+
+
+    useEffect(() => {
+        // 👇️ scroll to bottom every time messages change
+        containerRef.current.scrollTop = containerRef.current.scrollHeight;
+    }, [messages]);
 
     return (
         <>
@@ -19,7 +27,7 @@ const ChatBody = ({ messages, lastMessageRef, typingStatus }) => {
                 </button>
             </header>
 
-            <div className="message__container">
+            <div className="message__container" ref={containerRef}>
                 {messages.map((message) =>
                     message.name === localStorage.getItem('userName') ? (
                         <div className="message__chats" key={message.id}>
@@ -42,7 +50,7 @@ const ChatBody = ({ messages, lastMessageRef, typingStatus }) => {
                     <p>Someone is typing...</p>
                 </div> */}
 
-                <div ref={lastMessageRef} />
+                {/* <div ref={lastMessageRef} /> */}
                 <div className="message__status">
                     <p>{typingStatus}</p>
                 </div>
